@@ -34,4 +34,19 @@ public class TaskTest {
         assertEquals("Diseñar las tablas de la aplicación", task.getDescription());
         assertEquals(Priority.MEDIUM, task.getPriority());
     }
+
+    @Test
+    void tareaPuedePasarAEnProgreso() {
+
+        Task task = new Task(
+                3,
+                "Implementar API",
+                "Crear los endpoints de la aplicación",
+                Priority.HIGH
+        );
+
+        task.changeStatus(Status.IN_PROGRESS);
+
+        assertEquals(Status.IN_PROGRESS, task.getStatus());
+    }
 }

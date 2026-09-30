@@ -35,4 +35,8 @@ public class Task {
     public Status getStatus() {
         return status;
     }
+
+    public void changeStatus(Status newStatus) {
+        this.status = newStatus;
+    }
 }
