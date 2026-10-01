@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 public class TaskRepositoryTest {
 
@@ -39,5 +41,48 @@ public class TaskRepositoryTest {
             assertEquals("HIGH", resultSet.getString("priority"));
             assertEquals("TODO", resultSet.getString("status"));
         }
+    }
+
+    @Test
+    void debeEncontrarUnaTareaPorId() throws Exception {
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        DatabaseInitializer initializer = new DatabaseInitializer();
+        TaskRepository repository = new TaskRepository(databaseManager);
+
+        initializer.initialize(databaseManager);
+
+        Task task = new Task(
+                20,
+                "Crear frontend",
+                "Implementar la interfaz de usuario",
+                Priority.MEDIUM
+        );
+
+        task.changeStatus(Status.IN_PROGRESS);
+
+        repository.save(task);
+
+        Task foundTask = repository.findById(20);
+
+        assertEquals(20, foundTask.getId());
+        assertEquals("Crear frontend", foundTask.getTitle());
+        assertEquals("Implementar la interfaz de usuario", foundTask.getDescription());
+        assertEquals(Priority.MEDIUM, foundTask.getPriority());
+        assertEquals(Status.IN_PROGRESS, foundTask.getStatus());
+    }
+
+    @Test
+    void debeDevolverNullSiLaTareaNoExiste() throws Exception {
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        DatabaseInitializer initializer = new DatabaseInitializer();
+        TaskRepository repository = new TaskRepository(databaseManager);
+
+        initializer.initialize(databaseManager);
+
+        Task foundTask = repository.findById(999);
+
+        assertEquals(null, foundTask);
     }
 }

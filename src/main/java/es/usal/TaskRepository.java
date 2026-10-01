@@ -31,4 +31,40 @@ public class TaskRepository {
             statement.executeUpdate();
         }
     }
+
+    public Task findById(int id) throws SQLException {
+
+        String sql = """
+            SELECT id, title, description, priority, status
+            FROM tasks
+            WHERE id = ?
+            """;
+
+        try (Connection connection = databaseManager.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id);
+
+            try (var resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+
+                    Task task = new Task(
+                            resultSet.getInt("id"),
+                            resultSet.getString("title"),
+                            resultSet.getString("description"),
+                            Priority.valueOf(resultSet.getString("priority"))
+                    );
+
+                    task.changeStatus(
+                            Status.valueOf(resultSet.getString("status"))
+                    );
+
+                    return task;
+                }
+
+                return null;
+            }
+        }
+    }
 }
