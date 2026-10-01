@@ -85,4 +85,34 @@ public class TaskRepositoryTest {
 
         assertEquals(null, foundTask);
     }
+
+    @Test
+    void debeActualizarUnaTarea() throws Exception {
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        DatabaseInitializer initializer = new DatabaseInitializer();
+        TaskRepository repository = new TaskRepository(databaseManager);
+
+        initializer.initialize(databaseManager);
+
+        Task task = new Task(
+                30,
+                "Crear backend",
+                "Implementar el backend inicial",
+                Priority.MEDIUM
+        );
+
+        repository.save(task);
+
+        task.changeStatus(Status.DONE);
+
+        repository.update(task);
+
+        Task updatedTask = repository.findById(30);
+
+        assertEquals("Crear backend", updatedTask.getTitle());
+        assertEquals("Implementar el backend inicial", updatedTask.getDescription());
+        assertEquals(Priority.MEDIUM, updatedTask.getPriority());
+        assertEquals(Status.DONE, updatedTask.getStatus());
+    }
 }

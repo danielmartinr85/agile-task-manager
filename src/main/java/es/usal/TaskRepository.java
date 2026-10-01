@@ -67,4 +67,29 @@ public class TaskRepository {
             }
         }
     }
+
+    public void update(Task task) throws SQLException {
+
+        String sql = """
+            UPDATE tasks
+            SET title = ?,
+                description = ?,
+                priority = ?,
+                status = ?
+            WHERE id = ?
+            """;
+
+        try (Connection connection = databaseManager.connect();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, task.getTitle());
+            statement.setString(2, task.getDescription());
+            statement.setString(3, task.getPriority().name());
+            statement.setString(4, task.getStatus().name());
+            statement.setInt(5, task.getId());
+
+            statement.executeUpdate();
+        }
+    }
+
 }
